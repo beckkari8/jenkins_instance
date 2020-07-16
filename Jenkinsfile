@@ -80,7 +80,7 @@ def slavePodTemplate = """
                             #!/bin/bash
                             export AWS_DEFAULT_REGION=${aws_region}
                             terraform init
-                            terraform plan -auto-approve
+                            terraform plan
                             """
                         }
                     }
