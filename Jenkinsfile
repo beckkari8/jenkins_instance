@@ -44,14 +44,18 @@ def slavePodTemplate = """
             hostPath:
               path: /var/run/docker.sock
     """
-properties([
-    parameters([
-        booleanParam(defaultValue: false, description: 'Please select to apply the changes', name: 'terraformApply'),
-        booleanParam(defaultValue: false, description: 'Please select to destroy everything.', name: 'terraformDestroy'),
-        booleanParam(defaultValue: false, description: 'Please select to run the job in debug mode', name: 'debugMode'),
-        choice(choices: ['dev', 'qa', 'stage', 'prod'], description: 'Please select the environment to deploy.', name: 'environment'),
-        choice(choices: ['us-west-2', 'us-west-1', 'us-east-2', 'us-east-1', 'eu-west-1'], description: 'Please select the region', name: 'aws_region'),
-        string(defaultValue: 'None', description: 'Please provide the AMI_ID', name: 'AMI_ID', trim: true)
+    properties([
+        parameters([
+            booleanParam(defaultValue: false, description: 'Please select to apply the changes ', name: 'terraformApply'),
+            booleanParam(defaultValue: false, description: 'Please select to destroy all ', name: 'terraformDestroy'), 
+            string(defaultValue: '', description: 'Please add an ami_id:', name: 'ami', trim: false),
+            choice(choices: ['us-west-2', 'us-west-1', 'us-east-2', 'us-east-1', 'eu-west-1'], description: 'Please select the region', name: 'aws_region'),
+            booleanParam(defaultValue: false, description: 'yaml', name: 'yaml'),
+            extendedChoice(description: 'Select the log', multiSelectDelimiter: ',', name: 'log', quoteValue: false, saveJSONParamaneterToFile: false, type: 'PT_MULTI_SELECT',
+                          value: 'TRACE, DEBUG, INFO, WARN, ERROR', visibleItemCount: 5),
+            choice(choices: ['dev', 'qa', 'stage', 'prod'], description: 'Please select the environment to deploy.', name: 'environment')
+            
+            
         ])
     ])
 
@@ -65,6 +69,7 @@ properties([
             println("Generate Variables")
             def deployment_configuration_tfvars = """
             environment = "${environment}"
+            AMI_ID = "${AMI_ID}"
             """.stripIndent()
             writeFile file: 'deployment_configuration.tfvars', text: "${deployment_configuration_tfvars}"
             sh 'cat deployment_configuration.tfvars >> dev.tfvars'

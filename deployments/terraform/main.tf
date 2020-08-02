@@ -6,3 +6,4 @@ resource "aws_instance" "jenkins" {
     Name = "Jenkins"
   }
 }
+variable "AMI_ID" {}
