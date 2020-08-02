@@ -49,7 +49,7 @@ def slavePodTemplate = """
             booleanParam(defaultValue: false, description: 'Please select to apply the changes ', name: 'terraformApply'),
             booleanParam(defaultValue: false, description: 'Please select to destroy all ', name: 'terraformDestroy'), 
             string(defaultValue: '', description: 'Please add an ami_id:', name: 'AMI_ID', trim: false),
-            choice(choices: ['us-west-2', 'us-west-1', 'us-east-2', 'us-east-1', 'eu-west-1'], description: 'Please select the region', name: 'aws_region'),
+            choice(choices: ['us-east-1', 'us-west-2', 'us-west-1', 'us-east-2', 'eu-west-1'], description: 'Please select the region', name: 'aws_region'),
             choice(choices: ['NONE', 'TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR'], description: 'Please select to run the job in debug mode', name: 'DEBUG'),
             choice(choices: ['dev', 'qa', 'stage', 'prod'], description: 'Please select the environment to deploy.', name: 'environment')
         ])
