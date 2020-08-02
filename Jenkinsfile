@@ -51,7 +51,6 @@ properties([
         booleanParam(defaultValue: false, description: 'Please select to run the job in debug mode', name: 'debugMode'),
         choice(choices: ['dev', 'qa', 'stage', 'prod'], description: 'Please select the environment to deploy.', name: 'environment'),
         choice(choices: ['us-west-2', 'us-west-1', 'us-east-2', 'us-east-1', 'eu-west-1'], description: 'Please select the region', name: 'aws_region'),
-        string(defaultValue: 'None', description: 'Please provide the docker image', name: 'docker_image', trim: true),
         string(defaultValue: 'None', description: 'Please provide the AMI_ID', name: 'AMI_ID', trim: true)
         ])
     ])
@@ -59,7 +58,7 @@ properties([
     podTemplate(name: k8slabel, label: k8slabel, yaml: slavePodTemplate, showRawYaml: false) {
       node(k8slabel) {
         stage("Pull SCM") {
-            git 'https://github.com/beckkari8/HW2.git'
+            git 'https://github.com/beckkari8/jenkins_instance.git'
         }
         stage("Generate Variables") {
           dir('deployments/terraform') {
