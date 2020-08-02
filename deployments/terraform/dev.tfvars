@@ -4,4 +4,6 @@ s3_folder_project = "jenkins"
 s3_folder_region = "us-east-1"
 s3_folder_type = "hw2"
 s3_tfstate_file = "infrastructure.tfstate"
-TF_LOG = ${var.DEBUG}
+# TF_LOG = ${var.DEBUG}
+export TF_LOG = {}
+TF_LOG = "TRACE"
