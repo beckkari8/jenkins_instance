@@ -66,7 +66,7 @@ def slavePodTemplate = """
             def deployment_configuration_tfvars = """
             environment = "${environment}"
             AMI_ID = "${AMI_ID}"
-            DEBUG = "${export TF_LOG=DEBUG}"
+            DEBUG = "export TF_LOG=DEBUG"
             """.stripIndent()
             writeFile file: 'deployment_configuration.tfvars', text: "${deployment_configuration_tfvars}"
             sh 'cat deployment_configuration.tfvars >> dev.tfvars'
