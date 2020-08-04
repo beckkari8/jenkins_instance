@@ -124,7 +124,7 @@ def slavePodTemplate = """
                     }
                     stage("Terraform Destroy") {
                       if(params.terraformDestroy && params.DEBUG){
-                        println{"Destroying with debugMode"}
+                        println("Destroying with debugMode")
                             sh """
                             #!/bin/bash
                             source ./setenv.sh dev.tfvars
