@@ -66,6 +66,7 @@ def slavePodTemplate = """
             def deployment_configuration_tfvars = """
             environment = "${environment}"
             AMI_ID = "${AMI_ID}"
+            DEBUG = "export TF_LOG=DEBUG"
             """.stripIndent()
             writeFile file: 'deployment_configuration.tfvars', text: "${deployment_configuration_tfvars}"
             sh 'cat deployment_configuration.tfvars >> dev.tfvars'
@@ -78,64 +79,34 @@ def slavePodTemplate = """
                     println("Selected cred is: aws-access-${environment}")
                     stage("Terraform Apply/plan") {
                         if (!params.terraformDestroy) {
-                          if(params.terraformApply && params.DEBUG){
-                            println("Applying changes with debugMode")
-                            sh """
-                             #!/bin/bash
-                             export AWS_DEFAULT_REGION=${aws_region}
-                             export TF_LOG=DEBUG
-                             source ./setenv.sh dev.tfvars
-                             terraform apply -auto-approve -var-file \$DATAFILE
-                             """
-                          } 
-                          else if (params.terraformApply) {
+                            if (params.terraformApply) {
                                 println("Applying the changes")
                                 sh """
-                                 #!/bin/bash
+                                #!/bin/bash
                                 export AWS_DEFAULT_REGION=${aws_region}
+                                ${DEBUG}
                                 source ./setenv.sh dev.tfvars
                                 terraform apply -auto-approve -var-file \$DATAFILE
                                 """
-                  
                             } else {
-                                if(params.DEBUG){
-                                  println("Planning the changes with debugMode")
-                                  sh """
-                                  #!/bin/bash
-                                  set +ex
-                                  ls -l
-                                  export TF_LOG=DEBUG
-                                  source ./setenv.sh dev.tfvars
-                                  terraform plan -var-file \$DATAFILE
-                                  """
-                                }
-                                else{
-                                  println("Planing the changes")
-                                  sh """
-                                  #!/bin/bash
-                                  set +ex
-                                  ls -l
-                                  source ./setenv.sh dev.tfvars
-                                  terraform plan -var-file \$DATAFILE
-                                  """
-                                }
+                                println("Planing the changes")
+                                sh """
+                                #!/bin/bash
+                                set +ex
+                                ls -l
+                                export AWS_DEFAULT_REGION=${aws_region}
+                                source ./setenv.sh dev.tfvars
+                                terraform plan -var-file \$DATAFILE
+                                """
                             }
                         }
                     }
                     stage("Terraform Destroy") {
-                      if(params.terraformDestroy && params.DEBUG){
-                        println{"Destroying with debugMode"}
-                            sh """
-                            #!/bin/bash
-                            source ./setenv.sh dev.tfvars
-                            export TF_LOG=DEBUG
-                            terraform destroy -auto-approve -var-file \$DATAFILE
-                            """
-                      }
-                      else if (params.terraformDestroy) {
+                        if (params.terraformDestroy) {
                             println("Destroying the all")
                             sh """
                             #!/bin/bash
+                            export AWS_DEFAULT_REGION=${aws_region}
                             source ./setenv.sh dev.tfvars
                             terraform destroy -auto-approve -var-file \$DATAFILE
                             """
